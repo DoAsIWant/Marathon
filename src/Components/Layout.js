@@ -1,6 +1,6 @@
 import lay from "./Layout.module.css"
 
-const Layout = ({title,descr,id,bgImg,bgColor})=>{
+const Layout = ({title,id,bgImg,bgColor,children})=>{
     const inlineStyle = bgImg ? {background: 'url('+ bgImg + ')'} : {background: bgColor};
     return(
     
@@ -15,9 +15,8 @@ const Layout = ({title,descr,id,bgImg,bgColor})=>{
                     <span className={lay.separator}></span>
                 </div>
                 <div className={`${lay.desc} ${lay.full}`}>
-                   {
-                    descr && <p>{descr}</p>
-                   }
+                    {children}
+                
                 </div>
             </article>
         </div>
