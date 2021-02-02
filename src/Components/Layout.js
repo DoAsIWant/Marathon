@@ -1,4 +1,5 @@
 import lay from "./Layout.module.css"
+import cn from "classnames";
 
 const Layout = ({title,id,bgImg,bgColor,children})=>{
     const inlineStyle = bgImg ? {background: 'url('+ bgImg + ')'} : {background: bgColor};
@@ -14,7 +15,7 @@ const Layout = ({title,id,bgImg,bgColor,children})=>{
                     }
                     <span className={lay.separator}></span>
                 </div>
-                <div className={`${lay.desc} ${lay.full}`}>
+                <div className={cn(lay.desc,lay.full)}>
                     {children}
                 
                 </div>
