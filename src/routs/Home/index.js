@@ -141,16 +141,12 @@ const pokemons = [
   }
 ]
 
- const HomePage = ({onChangePage}) =>{
+ const HomePage = () =>{
 
-  const handleClick = (page)=>{
-    console.log("<Home>")
-    onChangePage(page);
-  }
   return (
     <>
     <MenuHeader></MenuHeader>
-    <Header title={"Head"} descr={"This is header"} onclickButton={handleClick} ></Header>
+    <Header title={"Head"} descr={"This is header"} ></Header>
 
     <Layout id={"first"} title={"First Block"} bgImg = {bg1} bgColor = {false}>
       <p>In the game two players face off against one another, one side playing as "blue", the other as "red" on a 3x3 grid.
