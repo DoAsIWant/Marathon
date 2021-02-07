@@ -1,6 +1,7 @@
-import {React,useState} from "react";
+import {React,useState,useEffect} from "react";
 import PokemonCard from "../../Components/PokemonCard"
 import {useHistory} from "react-router-dom";
+import database from "../../services/firebase";
 
 
 const POKEMONS = [{
@@ -135,34 +136,77 @@ const POKEMONS = [{
       "left": 4
     }
   }];
+
+
+
 const GamePage = ()=>{
     const history = useHistory();
     const [pokemons,setPokemons] = useState(POKEMONS);
+
     const clickGame = ()=>{
        history.push("/");
     }
+
+    useEffect(() => {
+      database.ref('pokemons').once('value', (snapshot) => {
+          setPokemons(snapshot.val());
+      })
+   }, []);
+
+   const clickCard = (id, baseKey) => {
+    setPokemons(prevState => {
+        return Object.entries(prevState).reduce((acc, item) => {
+            const pokemon = { ...item[1] };
+            if (pokemon.id === id) {
+                pokemon.active = !pokemon.active;
+                database.ref('pokemons/'+ baseKey).set(pokemon);
+              };
+
+              acc[item[0]] = pokemon;
+
+              return acc;
+          }, {});
+      });
+    }
+
+    const addPokemon = ()=>{
+      const newKey = database.ref().child('pokemons').push().key;        
+      let id = 25;
+      let pokObj = {...pokemons}; 
+      Object.entries(pokemons).map(([key, item]) => {
+          if(item.id === id ){
+              let lastId = pokemons[Object.keys(pokemons)[Object.keys(pokemons).length - 1]].id;
+              pokObj[newKey] = {...pokObj[key]};
+              pokObj[newKey].id = lastId + (lastId < 100 ?  100 : 1);   
+              database.ref('pokemons/' + newKey).set(pokObj[newKey]);
+            }
+          });        
+          setPokemons(pokObj);
+      }
+
     return(
         <div>
-           <button onClick={clickGame} className ="btn-danger">ЖМИ</button>
-
-           <div className = "d-flex">
-          {pokemons.map(item=>{
-             return <PokemonCard 
-                      name = {item.name} 
-                      type = {item.type} 
-                      img={item.img}
-                      id = {item.id}
-                      top = {item.top}
-                      left = {item.left}
-                      bottom = {item.bottom}
-                      right = {item.right}
-                      >
+           <button onClick={clickGame} className ="btn-danger">Домой</button>
+           <button onClick = {addPokemon}>Добавить</button>
+           
+           <div className="flex">
+                    {
+                             Object.entries(pokemons).map(([key, item]) => {
+                               return <PokemonCard
+                                baseKey={key}
+                                key={item.id}
+                                id={item.id}
+                                name={item.name}
+                                values={item.values}
+                                img={item.img}
+                                type={item.type}
+                                isActive={item.active || false}
+                                onClickCard={clickCard} />})
+                        }
                       
-                      </PokemonCard>
-          })
-          }
+                </div>
         </div>
-        </div>
+      
     )
 }
 

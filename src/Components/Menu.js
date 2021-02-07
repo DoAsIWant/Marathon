@@ -2,7 +2,7 @@ import s from  "./Menu.module.css";
 import {Link} from "react-router-dom";
 const MENU = [{
   item:"HOME",
-  to : "/welcome"
+  to : "/"
   },
   {
   item:"GAME",
