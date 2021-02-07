@@ -4,6 +4,7 @@ import cn from "classnames"
 
 import cardBack from "../images/card-back-side.jpg"
 import {useState} from "react"
+
 const PokemonCard = ({name,id,type,img,top,bottom,left,right})=>{
     const[active,setActive] = useState(false);
 
