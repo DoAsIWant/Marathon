@@ -155,7 +155,7 @@ const pokemons = [
     </Layout>
 
     <Layout id={"second"} title={"Second Block"} bgImg = {false} bgColor = {"#1abc9c"}>
-      <div className = "d-flex">
+      <div className = "flex">
           {pokemons.map(item=>{
              return <PokemonCard 
                       name = {item.name} 
