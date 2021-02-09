@@ -9,15 +9,16 @@ import Footer from "./Components/Footer";
 import {BrowserRouter,Route,Switch,useRouteMatch} from "react-router-dom";
 import s from "./style.module.css"
 import cn from "classnames";
-
+import {firebaseContext} from "./context/firebaseContext";
+import FireBase from "./services/firebase";
 
 
 
 const App = ()=>{
    const match = useRouteMatch("/")
      return(
-  
-    <Switch>
+  <firebaseContext.Provider value={new FireBase()}>
+      <Switch>
        <Route>
          <>
          <MenuHeader bgActive={!match.isExact}></MenuHeader>
@@ -36,7 +37,7 @@ const App = ()=>{
           
          <Route component={NotFound}/>
       </Switch>
-   
+   </firebaseContext.Provider>
      )
   
 
