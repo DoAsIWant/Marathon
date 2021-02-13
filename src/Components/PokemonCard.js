@@ -1,23 +1,25 @@
 import React from "react";
 import s from "./PokemonCard.module.css";
 import cn from "classnames"
-const PokemonCard = ({selected,name,id,type,img,top,bottom,left,right,onClickCard,active,minimize,className})=>{
+const PokemonCard = ({selected,name,id,type,img,values,onClickCard,active,
+    minimize,className})=>{
    
-    const clickPokemon = ()=>{
-        onClickCard(id)
+    const clickPokemon = (id)=>{
+        console.log(selected)
+       onClickCard && onClickCard(id)
     }
 
     return(
         <div className={s.root} onClick={clickPokemon}>
-         <div className={cn(className, s.pokemonCard, {[s.active]: active})}>
+         <div className={cn(className, s.pokemonCard, {[s.active]: active},{[s.selected]:selected})}>
     <div className={s.cardFront}>
         <div className={cn(s.wrap, s.front)}>
             <div className={cn(s.pokemon, s[type])}>
                 <div className={s.values}>
-                    <div className={cn(s.count, s.top)}>{top}</div>
-                    <div className={cn(s.count, s.right)}>{right}</div>
-                    <div className={cn(s.count, s.bottom)}>{bottom}</div>
-                    <div className={cn(s.count, s.left)}>{left}</div>
+                    <div className={cn(s.count, s.top)}>{values.top}</div>
+                    <div className={cn(s.count, s.right)}>{values.right}</div>
+                    <div className={cn(s.count, s.bottom)}>{values.bottom}</div>
+                    <div className={cn(s.count, s.left)}>{values.left}</div>
                 </div>
                 <div className={s.imgContainer}>
                     <img src={img} alt={name} />

@@ -1,203 +1,66 @@
 import {React,useState,useEffect,useContext} from "react";
 import PokemonCard from "../../Components/PokemonCard"
 import {useHistory} from "react-router-dom";
-import database from "../../services/firebase";
-import pokemonContext from "../../context/pokemonContext";
-
-const POKEMONS = [{
-    "abilities": [
-      "keen-eye",
-      "tangled-feet",
-      "big-pecks"
-    ],
-    "stats": {
-      "hp": 63,
-      "attack": 60,
-      "defense": 55,
-      "special-attack": 50,
-      "special-defense": 50,
-      "speed": 71
-    },
-    "type": "flying",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/17.png",
-    "name": "pidgeotto",
-    "base_experience": 122,
-    "height": 11,
-    "id": 17,
-    "values": {
-      "top": "A",
-      "right": 2,
-      "bottom": 7,
-      "left": 5
-    }
-  },
-  {
-    "abilities": [
-      "intimidate",
-      "shed-skin",
-      "unnerve"
-    ],
-    "stats": {
-      "hp": 60,
-      "attack": 95,
-      "defense": 69,
-      "special-attack": 65,
-      "special-defense": 79,
-      "speed": 80
-    },
-    "type": "poison",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/24.png",
-    "name": "arbok",
-    "base_experience": 157,
-    "height": 35,
-    "id": 24,
-    "values": {
-      "top": 5,
-      "right": 9,
-      "bottom": "A",
-      "left": "A"
-    }
-  },
-  {
-    "abilities": [
-      "static",
-      "lightning-rod"
-    ],
-    "stats": {
-      "hp": 35,
-      "attack": 55,
-      "defense": 40,
-      "special-attack": 50,
-      "special-defense": 50,
-      "speed": 90
-    },
-    "type": "electric",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-    "name": "pikachu",
-    "base_experience": 112,
-    "height": 4,
-    "id": 25,
-    "values": {
-      "top": 8,
-      "right": "A",
-      "bottom": 9,
-      "left": 6
-    }
-  },
-  {
-    "abilities": [
-      "overgrow",
-      "chlorophyll"
-    ],
-    "stats": {
-      "hp": 45,
-      "attack": 49,
-      "defense": 49,
-      "special-attack": 65,
-      "special-defense": 65,
-      "speed": 45
-    },
-    "type": "grass",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-    "name": "bulbasaur",
-    "base_experience": 64,
-    "height": 7,
-    "id": 1,
-    "values": {
-      "top": 8,
-      "right": 4,
-      "bottom": 2,
-      "left": 7
-    }
-  },
-  {
-    "abilities": [
-      "blaze",
-      "solar-power"
-    ],
-    "stats": {
-      "hp": 39,
-      "attack": 52,
-      "defense": 43,
-      "special-attack": 60,
-      "special-defense": 50,
-      "speed": 65
-    },
-    "type": "fire",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
-    "name": "charmander",
-    "base_experience": 62,
-    "height": 6,
-    "id": 4,
-    "values": {
-      "top": 7,
-      "right": 6,
-      "bottom": 1,
-      "left": 4
-    }
-  }];
+import {FirebaseContext} from "../../context/firebaseContext";
+import {PokemonContext} from "../../context/pokemonContext"
+import s from "./start.module.css";
 
 
-
+  
 const Start = ()=>{
     const history = useHistory();
-    const [pokemons,setPokemons] = useState(POKEMONS);
+    const [pokemons,setPokemons] = useState({});
+    const pokemonContext = useContext(PokemonContext);
+    const firebase = useContext(FirebaseContext);
     
+    console.log(pokemonContext)
     const clickGame = ()=>{
        history.push("/");
     }
     
-    const getPokemons = ()=>{
-      /*database.ref('pokemons').once('value', (snapshot) => {
-        setPokemons(snapshot.val());
-        
-    }) */
-    }
     useEffect(() => {
-       getPokemons();
+      firebase.getPokemonSoket((pokemons)=>{
+        setPokemons(pokemons);
+      })
    }, []);
 
-   const clickCard = (id) => {
-    setPokemons(prevState => {
-        return Object.entries(prevState).reduce((acc, item) => {
-            const pokemon = { ...item[1] };
-            if (pokemon.id === id) {
-                pokemon.selected = !pokemon.selected;
-              };
-
-              acc[item[0]] = pokemon;
-             /* database.ref('pokemons/'+ item[0]).set(pokemon);*/
-              return acc;
-          }, {});
-      });
+   const onChangeSelected = (key) => {
+      const pokemon = {...pokemons[key]}
+      pokemonContext.onSelectedPokemon(key,pokemon);
+     setPokemons((prestate)=>(        
+      {
+        ...prestate, [key]:{...prestate[key],selected:!prestate[key].selected}
+     }))
     }
-
-    const addPokemon = ()=>{
-       const data = POKEMONS;
-       const newKey = database.ref().child("pokemons").push().key
-       /*database.ref('pokemons/' + newKey).set(data).then(()=>{getPokemons()})*/
-      }
-
-    const is
-
+    
+    const StartHandler = ()=>{
+       history.push("/game/board")
+    }
+   
     return(
         <div>
            <button onClick={clickGame} className ="btn-danger">Домой</button>
-           <button onClick = {addPokemon}>Добавить</button>
+           <button disabled={Object.keys(pokemonContext.pokemon).length > 5} onClick = {StartHandler} 
+           className={s.start}>Начать</button>
            
-           <div className="flex">
+           <div className={s.flex}>
                     {
                              Object.entries(pokemons).map(([key, item]) => {
                                return <PokemonCard
+                                className={s.card}
                                 key={key}
                                 id={item.id}
                                 name={item.name}
                                 values={item.values}
                                 img={item.img}
                                 type={item.type}
-                                active={item.active||true}
-                                onClickCard={clickCard}
-                                selected = {item.selected} />})
+                                active={true}
+                                onClickCard={()=>{if(Object.keys(pokemonContext.pokemon).length < 5 
+                                 || item.selected){
+                                 onChangeSelected(key)
+                                }}}
+                                selected = {item.selected}
+                                 />})
                         }
                       
                 </div>
