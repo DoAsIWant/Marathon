@@ -2,7 +2,7 @@ import React from "react";
 import s from "./PokemonCard.module.css";
 import cn from "classnames"
 const PokemonCard = ({selected,name,id,type,img,values,onClickCard,active,
-    minimize,className})=>{
+    minimize,className,posession})=>{
    
     const clickPokemon = (id)=>{
         console.log(selected)
@@ -14,7 +14,7 @@ const PokemonCard = ({selected,name,id,type,img,values,onClickCard,active,
          <div className={cn(className, s.pokemonCard, {[s.active]: active},{[s.selected]:selected})}>
     <div className={s.cardFront}>
         <div className={cn(s.wrap, s.front)}>
-            <div className={cn(s.pokemon, s[type])}>
+            <div className={cn(s.pokemon, s[type])} style={{backgroundColor: posession}}>
                 <div className={s.values}>
                     <div className={cn(s.count, s.top)}>{values.top}</div>
                     <div className={cn(s.count, s.right)}>{values.right}</div>
