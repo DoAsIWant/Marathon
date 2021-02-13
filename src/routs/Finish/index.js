@@ -1,7 +1,13 @@
+import {PokemonContext} from "../../context/pokemonContext"
+import {useContext,useState} from "react";
+
 const Finish = ()=>{
+    const [finish,setFinish] = useState(null);
+    const pokemon = useContext(PokemonContext);
+
     return(
         <div>
-            <h1>Finish Page</h1>
+           
         </div>
     )
 }
